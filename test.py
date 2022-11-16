@@ -5,6 +5,6 @@ Graph = TangleGraph()
 
 newtr = Transaction('234234', '[genesis]', 25000000000)
 
-Graph.AddTransaction(newtr, Graph)
+Graph.AddTransaction(newtr)
 
 print(list(Graph.DAG))
