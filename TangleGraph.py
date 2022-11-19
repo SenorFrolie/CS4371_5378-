@@ -1,4 +1,6 @@
 from transaction import Transaction
+# the graph will have nodes, which have transactions
+
 
 class TangleGraph(object):
     def __init__(self, *args):
@@ -11,9 +13,6 @@ class TangleGraph(object):
     # function to add transactions to dag - needs stuff like verification..
     def AddTransaction(self, transaction):
             self.DAG[transaction.source] = transaction
-    
-    # some functions that need to be implemented 
-    # - selectTip
-    # - validateTip
+
 
     
