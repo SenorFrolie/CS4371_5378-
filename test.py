@@ -1,19 +1,39 @@
-from transaction import Transaction
-from TangleGraph import TangleGraph
+from transaction import *
+from TangleGraph import *
+from TangleGraph import *
+ 
 
+# Just testing some of the functions and classes
+# creating a test tangle graph and adding random trasactions
 Graph = TangleGraph()
 
-newtr = Transaction('234234', 'genesis', 25000000000)
-Graph.AddTransaction(newtr)
-newtr = Transaction('78273', 'genesis', 234234)
+tips = Graph.selecTips()
+newtr = Transaction('transac1', '4545645646', '4544454',456456456, tips)
 Graph.AddTransaction(newtr)
 
-print(list(Graph.DAG))
+tips = Graph.selecTips()
+newtr2 = Transaction('transac2', '54545', '56515121', 456456, tips)
+Graph.AddTransaction(newtr2)
 
+tips = Graph.selecTips()
+newtr3 = Transaction('transac3', '848454', '5874156489', 15150215, tips)
+Graph.AddTransaction(newtr3)
+
+tips = Graph.selecTips()
+newtr4 = Transaction('transac4', '54545', '56515121', 952656065, tips)
+Graph.AddTransaction(newtr4)
+
+# print in current transactions in DAG 
 for i in Graph.DAG:
-    print(i)
-    print(Graph.DAG[i].weight)
-    print(Graph.DAG[i].source)
-    print( Graph.DAG[i].destination)
+    Graph.DAG[i].printTransaction()
 
-    
+# edges and opposite edges 
+print('Edges')
+for i in Graph.edges:
+    print(i, Graph.edges[i])
+print('\n')
+
+print('Opposite Edges')
+for i in Graph.oppositeEdges:
+    print(i, Graph.oppositeEdges[i])
+print('\n')
