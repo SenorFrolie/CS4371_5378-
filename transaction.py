@@ -1,12 +1,6 @@
 import time
-import hashlib
-
-# function to get pow for the new transaction
-# still needs a rule for proof of work and check the validity of it
-def calcPOW(data):  
-    data = str(data)
-    result = hashlib.sha256(data.encode())
-    return result.hexdigest()
+# import hashlib
+from POWandValid import *
 
 class Transaction():
     def __init__(self, id,source, destination, data, validated):
@@ -18,21 +12,15 @@ class Transaction():
         self.data = data
         self.source = source
         self.destination = destination
-
         # this field will keep the ids of transactions that were validated by
         # this transaction - the validated parameter will be the two selected tips
         # from the selectTips function
         self.validated = validated
 
-        # this will be used to get pow
-        self.hashData = {
-            'source': source,
-            'destination': destination,
-            'data': data 
-        }
         # calculate proof of work
-        self.pow = calcPOW(self.hashData)
-        return
+        pow = calcPOW(self)
+        self.powHash = pow[0]
+        self.nonce = pow[1]
 
     #print trasaction information - mainly for testing
     def printTransaction(self):
@@ -42,5 +30,6 @@ class Transaction():
         print("Destination: ", self.destination)
         print("Source: ", self.source)
         print("Data: ", self.data)
-        print("POW: ", self.pow)
+        print("POW: ", self.powHash)
+        print("Nonce: ", self.nonce)
         print('\n')

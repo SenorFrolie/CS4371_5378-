@@ -1,8 +1,9 @@
 from transaction import *
+from POWandValid import *
 import random
 
 # the graph will have nodes, which have transactions
-class TangleGraph(object):
+class TangleGraph():
     # constructor for tangle graph
     # the graph is made up of a map containing the transaction objects, a map for edges
     # and a map for opposite edges
@@ -11,7 +12,7 @@ class TangleGraph(object):
 
         # Make genesis node
         # source, destination, and data can be randomly generated, this are just initial values - maybe we can use the uuid libray
-        GenesisIDTransaction = Transaction(GenesisID, 'GenesisSRC', 'GenesisDEST', 000000000,[GenesisID,GenesisID]) 
+        GenesisIDTransaction = Transaction(GenesisID, 'GenesisSRC', 'GenesisDEST', 000000000, None) 
 
         # add genesis node to DAG
         # DAG is a map that will contain the actual transactions
@@ -32,13 +33,29 @@ class TangleGraph(object):
         # <id of a transaction: [ids of transactions that have validated the transaction in key]
         self.oppositeEdges = {GenesisID:[] } 
 
+    # NEEDS IMPLEMENTATION with Algorithm for tip selection
     # function that will select the tips for the new transaction to validate,
-    # for now is just a random selection for testing - Algorithm for tip selection needs to be implemented
-    def selecTips(self):
+    # for now is just a random selection for testing, 
+    def selectTips(self):
+        # choose two random tips
         tip1 = random.choice(list(self.DAG))
         tip2 = random.choice(list(self.DAG))
-        return [tip1,tip2]
 
+        # if the genesis is the only transaction present return the genesis as the
+        # selected tips
+        if len(self.DAG) == 1:
+            return [tip1,tip2]
+
+        # if there is more than just the genesis node, choose different transactions
+
+        # checking that the selected tip has a valid pow hash
+        while not validTipPOW(self.DAG[tip1]):
+            tip1 = random.choice(list(self.DAG))
+
+        while  not validTipPOW(self.DAG[tip2]):
+            tip2 = random.choice(list(self.DAG))
+
+        return [tip1,tip2]
 
     # function to add transactions to tangle graph, for now it's just adding the new transactions -
     # still needs validation of tips
@@ -71,5 +88,7 @@ class TangleGraph(object):
         else:
             self.oppositeEdges[validatedTips[1]].append(transaction.id) 
         
-    # function for cummulativeWeight needs to be implemented
-    # def cummulativeWeight(self, transaction):
+    # NEEDS IMPLEMENTATION
+    # function for calculating cummulative weight everytime a transaction is validated
+        def changecummulativeWeight(self, transaction):
+            return

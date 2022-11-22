@@ -1,25 +1,23 @@
 from transaction import *
-from TangleGraph import *
-from TangleGraph import *
- 
+from TangleGraph import * 
 
 # Just testing some of the functions and classes
 # creating a test tangle graph and adding random trasactions
 Graph = TangleGraph()
 
-tips = Graph.selecTips()
+tips = Graph.selectTips()
 newtr = Transaction('transac1', '4545645646', '4544454',456456456, tips)
 Graph.AddTransaction(newtr)
 
-tips = Graph.selecTips()
+tips = Graph.selectTips()
 newtr2 = Transaction('transac2', '54545', '56515121', 456456, tips)
 Graph.AddTransaction(newtr2)
 
-tips = Graph.selecTips()
+tips = Graph.selectTips()
 newtr3 = Transaction('transac3', '848454', '5874156489', 15150215, tips)
 Graph.AddTransaction(newtr3)
 
-tips = Graph.selecTips()
+tips = Graph.selectTips()
 newtr4 = Transaction('transac4', '54545', '56515121', 952656065, tips)
 Graph.AddTransaction(newtr4)
 
@@ -37,3 +35,7 @@ print('Opposite Edges')
 for i in Graph.oppositeEdges:
     print(i, Graph.oppositeEdges[i])
 print('\n')
+
+# changing some data to check the valid fuction - should be false
+Graph.DAG['transac2'].data = 'basjdnfajdv'
+print(validTipPOW(Graph.DAG['transac2']))
