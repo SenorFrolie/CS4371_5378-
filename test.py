@@ -2,7 +2,8 @@ from transaction import *
 from TangleGraph import * 
 import random as rn
 from math import *
-
+import matplotlib.pyplot as plt
+import networkx as nx
 
 # Just testing some of the functions and classes
 # creating a test tangle graph and adding random trasactions
@@ -70,3 +71,18 @@ for i in Graph.DAG:
 # changing some data to check the valid fuction - should be false
 # for i in Graph.DAG:
 #     print(validTipPOW(Graph.DAG[i]))
+
+edges = Graph.edges
+nodes = []
+
+for i in edges.keys():
+    for j in edges[i]:
+        nodes.append((i,j))
+
+G = nx.DiGraph()
+G.add_edges_from(nodes)
+plt.tight_layout()
+nx.draw_networkx(G, arrows=True)
+plt.title("Tangle")
+plt.show()
+
