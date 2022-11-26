@@ -1,19 +1,20 @@
 import hashlib
 from transaction import *
+from Encryption import *
 
 # This document contains the calcPOW and validation functions that can be called
 # when creating new transactions or checking the hashing of a tip for validation
 
 
 # function to get pow for a transaction - returns a list of 2 elements
-# at [0]:none [1]:pow hash
+# at [0]:nonce [1]:pow hash
 def calcPOW(transaction): 
     # This two elements will be used to get pow hash and nonce 
     nonce = 0
     hashData = str({
-            'source': transaction.source,
-            'destination': transaction.destination,
-            'data': transaction.data 
+            'source': Decrypt(transaction.source),
+            'destination': Decrypt(transaction.destination),
+            'data': Decrypt(transaction.data)
         })
     # calculating the initial pow hash and nonce
     result = hashlib.sha256(hashData.encode() + str(nonce).encode())
@@ -41,9 +42,9 @@ def validTipPOW(transaction):
         # calculate hash with current data and nonce
         nonce = transaction.nonce
         hashData = str({
-            'source': transaction.source,
-            'destination': transaction.destination,
-            'data': transaction.data 
+            'source': Decrypt(transaction.source),
+            'destination': Decrypt(transaction.destination),
+            'data': Decrypt(transaction.data)
         })
         currentHash = hashlib.sha256(hashData.encode() + str(nonce).encode())
         currentHash = currentHash.hexdigest()

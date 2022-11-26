@@ -12,7 +12,7 @@ class TangleGraph():
 
         # Make genesis node
         # source, destination, and data can be randomly generated, this are just initial values - maybe we can use the uuid libray
-        GenesisIDTransaction = Transaction(GenesisID, 'GenesisSRC', 'GenesisDEST', 000000000, None) 
+        GenesisIDTransaction = Transaction(GenesisID, 'GenesisSRC', 'GenesisDEST', '000000000' , None) 
 
         # add genesis node to DAG
         # DAG is a map that will contain the actual transactions
@@ -33,9 +33,10 @@ class TangleGraph():
         # <id of a transaction: [ids of transactions that have validated the transaction in key]
         self.oppositeEdges = {GenesisID:[] } 
 
-    # NEEDS IMPLEMENTATION with Algorithm for tip selection
-    # function that will select the tips for the new transaction to validate,
-    # for now is just a random selection for testing, 
+
+    # function that will select the tips for the new transaction to validate
+    # It will select the most 2 recently added tips, and if those are invalid, it 
+    # will choose two random tips
     def selectTips(self):
         # choose two random tips
         tip1 = random.choice(list(self.DAG))
@@ -46,13 +47,15 @@ class TangleGraph():
         if len(self.DAG) == 1:
             return [tip1,tip2]
 
-        # if there is more than just the genesis node, choose different transactions
+        # choose the 2 most recently added tips
+        tip1, tip2 = set(list(self.DAG.keys())[-2:])
 
+        # if there is more than just the genesis node, choose different transactions
         # checking that the selected tip has a valid pow hash
         while not validTipPOW(self.DAG[tip1]):
             tip1 = random.choice(list(self.DAG))
 
-        while  not validTipPOW(self.DAG[tip2]):
+        while  not (validTipPOW(self.DAG[tip2])) or tip1 == tip2:
             tip2 = random.choice(list(self.DAG))
 
         return [tip1,tip2]
