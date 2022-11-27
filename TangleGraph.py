@@ -82,8 +82,9 @@ class TangleGraph():
         else: # update cumulative weight of parent node
             #print("self.edges[{id}]]: {res}".format(id=transaction.id, res=self.edges[transaction.id]))
             #print("self.edges[{id}][1]]: {res}".format(id=transaction.id, res=self.edges[transaction.id][1]))
-            parent = self.DAG[self.edges[transaction.id][1]]
-            self.changeCumulativeWeight(parent)
+            for parent in self.edges[transaction.id]:
+                parentNode = self.DAG[parent]
+                self.changeCumulativeWeight(parentNode)
             
                 
     # function to add transactions to tangle graph, for now it's just adding the new transactions -
@@ -119,3 +120,4 @@ class TangleGraph():
             
         # recursively update cumulative weights until we hit the genesis node
         self.changeCumulativeWeight(transaction)
+        
