@@ -59,7 +59,33 @@ class TangleGraph():
             tip2 = random.choice(list(self.DAG))
 
         return [tip1,tip2]
+    
+    # function for calculating cummulative weight everytime a transaction is validated
+    def changeCumulativeWeight(self, transaction):
+        #print("top of CCW, transaction ID: ",transaction.id)
 
+        # get weights of children 
+        childWeights = 0 
+        #print("self.oppositeEdges[{id}]]: {res}".format(id=transaction.id, res=self.oppositeEdges[transaction.id]))
+        #print("self.edges[{id}]]: {res}".format(id=transaction.id, res=self.edges[transaction.id]))
+        for children in self.oppositeEdges[transaction.id]:
+            childWeights += self.DAG[children].cumulativeWeight
+            #print("updated childWeights; new value: ",childWeights)
+            
+        # add weight to transaction cumulative weight
+            transaction.cumulativeWeight = transaction.directWeight + childWeights
+        # return once we hit genesis
+        if transaction.id == 'genesis':
+            #print("hit genesis node - returning now")
+            return
+        
+        else: # update cumulative weight of parent node
+            #print("self.edges[{id}]]: {res}".format(id=transaction.id, res=self.edges[transaction.id]))
+            #print("self.edges[{id}][1]]: {res}".format(id=transaction.id, res=self.edges[transaction.id][1]))
+            parent = self.DAG[self.edges[transaction.id][1]]
+            self.changeCumulativeWeight(parent)
+            
+                
     # function to add transactions to tangle graph, for now it's just adding the new transactions -
     # still needs validation of tips
     def AddTransaction(self, transaction):
@@ -90,8 +116,6 @@ class TangleGraph():
             self.oppositeEdges[validatedTips[1]] = [transaction.id]
         else:
             self.oppositeEdges[validatedTips[1]].append(transaction.id) 
-        
-    # NEEDS IMPLEMENTATION
-    # function for calculating cummulative weight everytime a transaction is validated
-        def changecummulativeWeight(self, transaction):
-            return
+            
+        # recursively update cumulative weights until we hit the genesis node
+        self.changeCumulativeWeight(transaction)

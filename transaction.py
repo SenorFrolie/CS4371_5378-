@@ -2,14 +2,16 @@ import time
 # import hashlib
 from POWandValid import *
 from Encryption import *
+import math
 
 class Transaction():
     def __init__(self, id,source, destination, data, validated):
         # transaction fields 
         self.id = id
         self.timeStamp = time.time()
-        self.weight = 1
-        self.cumulativeWeight = self.weight
+        #self.levelOfAutonomy = 1 
+        self.directWeight = 1 #math.pow(3,self.levelOfAutonomy)
+        self.cumulativeWeight = self.directWeight
         self.data = Encrypt(data)
         self.source = Encrypt(source)
         self.destination = Encrypt(destination)
@@ -25,6 +27,7 @@ class Transaction():
 
     #prints encrypted trasaction information
     def printEncryptedTransaction(self):
+        print("Encrypted transaction details:")
         print("ID: ",self.id)
         print("Cumulative Weight: ", self.cumulativeWeight)
         print("Time: ", self.timeStamp)
@@ -37,6 +40,7 @@ class Transaction():
 
     #prints decrypted trasaction information
     def printDecryptedTransaction(self):
+        print("Decrypted transaction details:")
         print("ID: ",self.id)
         print("Cumulative Weight: ", self.cumulativeWeight)
         print("Time: ", self.timeStamp)
