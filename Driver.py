@@ -5,14 +5,11 @@ from math import *
 import matplotlib.pyplot as plt
 import networkx as nx
 
-# Just testing some of the functions and classes
-# creating a test tangle graph and adding random trasactions
-Graph = TangleGraph()
+# amount of nodes that will be added to the Tangle - can be changed by user
+AMOUNT = 7
 
 lamb = 10
-id = 0
-
-    # Returning a number between 0-1
+# Returning a number between 0-1
 def random():
     return 0 + (100-50)*rn.random()
 
@@ -23,9 +20,11 @@ def genExp(lamb):
         x = (-1/lamb)*log(u)
     return x
 
+# creating a test tangle graph and adding random trasactions
+Graph = TangleGraph()
 numberofTransaction = 0
-
-while(numberofTransaction <= 5):
+id = 0
+while(numberofTransaction <= AMOUNT):
     #(self, id,source, destination, data, validated):   
     tips = Graph.selectTips()
     newtr = Transaction(id, genExp(lamb), genExp(lamb),genExp(lamb), tips)
@@ -33,48 +32,15 @@ while(numberofTransaction <= 5):
     id+=1
     numberofTransaction +=1
 
-
-################
-# tips = Graph.selectTips()
-# newtr1 = Transaction('transac1', 'dfvsfbv', 'dfsvsfdv', 456456, tips)
-# Graph.AddTransaction(newtr1)
-
-# tips = Graph.selectTips()
-# newtr2 = Transaction('transac2', '54545', '56515121', 456456, tips)
-# Graph.AddTransaction(newtr2)
-
-# tips = Graph.selectTips()
-# newtr3 = Transaction('transac3', '848454', '5874156489', 15150215, tips)
-# Graph.AddTransaction(newtr3)
-
-# tips = Graph.selectTips()
-# newtr4 = Transaction('transac4', '54545', '56515121', 952656065, tips)
-# Graph.AddTransaction(newtr4)
-
-
 # print in current transactions in DAG 
 for i in Graph.DAG:
     Graph.DAG[i].printDecryptedTransaction()
     Graph.DAG[i].printEncryptedTransaction()
 
-# edges and opposite edges 
-# print('Edges')
-# for i in Graph.edges:
-#     print(i, Graph.edges[i])
-# print('\n')
-
-# print('Opposite Edges')
-# for i in Graph.oppositeEdges:
-#     print(i, Graph.oppositeEdges[i])
-# print('\n')
-
-# changing some data to check the valid fuction - should be false
-# for i in Graph.DAG:
-#     print(validTipPOW(Graph.DAG[i]))
-
+# Visualization for tangle Graph
 edges = Graph.edges
 nodes = []
-
+nodes_color = []
 for i in edges.keys():
     for j in edges[i]:
         if i == None:
@@ -82,11 +48,17 @@ for i in edges.keys():
         if j == None:
             continue
         nodes.append(((i,Graph.DAG[i].cumulativeWeight),(j,Graph.DAG[j].cumulativeWeight)))
-        #nodes.append((i,j))
 
+# get different colors for tips and validated nodes
+for i in Graph.DAG:
+    if Graph.DAG[i].cumulativeWeight <= 1:
+        nodes_color.append("red")
+    else:
+        nodes_color.append("cyan")
+        
 G = nx.DiGraph()
 G.add_edges_from(nodes)
 plt.tight_layout()
-nx.draw_networkx(G, arrows=True, node_color='cyan', node_size=1000, font_weight='bold', pos=nx.spring_layout(G,k=4))
+nx.draw_networkx(G, arrows=True, node_color=nodes_color, node_size=1000, font_weight='bold', pos=nx.spring_layout(G,k=4))
 plt.title("Tangle")
 plt.show()

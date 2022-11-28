@@ -8,10 +8,9 @@ class TangleGraph():
     # the graph is made up of a map containing the transaction objects, a map for edges
     # and a map for opposite edges
     def __init__(self):    
-        GenesisID = 'genesis' #id for the genesis node, maybe we can use a random id generator like the uuid library
+        GenesisID = 'genesis' #id for the genesis node
 
         # Make genesis node
-        # source, destination, and data can be randomly generated, this are just initial values - maybe we can use the uuid libray
         GenesisIDTransaction = Transaction(GenesisID, 'GenesisSRC', 'GenesisDEST', '000000000' , None) 
 
         # add genesis node to DAG
@@ -28,8 +27,7 @@ class TangleGraph():
 
         # add genesis node to opposite edges
         # a map containing the opposite edges of the dag, similar to the edges map, but
-        # keeping track of transactions that have validated a specific transaction,
-        # can be useful for tip selection to make sure there is no cycles.
+        # keeping track of transactions that have validated a specific transaction
         # <id of a transaction: [ids of transactions that have validated the transaction in key]
         self.oppositeEdges = {GenesisID:[] } 
 
@@ -50,7 +48,7 @@ class TangleGraph():
         # choose the 2 most recently added tips
         tip1, tip2 = set(list(self.DAG.keys())[-2:])
 
-        # if there is more than just the genesis node, choose different transactions
+        # choose different transactions
         # checking that the selected tip has a valid pow hash
         while not validTipPOW(self.DAG[tip1]):
             tip1 = random.choice(list(self.DAG))
@@ -62,36 +60,25 @@ class TangleGraph():
     
     # function for calculating cummulative weight everytime a transaction is validated
     def changeCumulativeWeight(self, transaction):
-        print("top of CCW, transaction ID: ",transaction.id)
-
         # get weights of children 
         childWeights = 0 
-        print("self.oppositeEdges[{id}]]: {res}".format(id=transaction.id, res=self.oppositeEdges[transaction.id]))
-        print("self.edges[{id}]]: {res}".format(id=transaction.id, res=self.edges[transaction.id]))
         for children in self.oppositeEdges[transaction.id]:
             childWeights += self.DAG[children].cumulativeWeight
-            #print("updated childWeights; new value: ",childWeights)
         # add weight to transaction cumulative weight
             transaction.cumulativeWeight = transaction.directWeight + childWeights
             
         # return once we hit genesis
         if transaction.id == 'genesis':
-            #print("hit genesis node - returning now")
             return
         
         else: # update cumulative weight of parent node
-            #print("self.edges[{id}]]: {res}".format(id=transaction.id, res=self.edges[transaction.id]))
-            #print("self.edges[{id}][1]]: {res}".format(id=transaction.id, res=self.edges[transaction.id][1]))
             for parent in self.edges[transaction.id]:
                 if parent == None:
                     continue
                 parentNode = self.DAG[parent]
-                self.changeCumulativeWeight(parentNode)
-        print()
-            
+                self.changeCumulativeWeight(parentNode)            
                 
-    # function to add transactions to tangle graph, for now it's just adding the new transactions -
-    # still needs validation of tips
+    # function to add transactions to tangle graph
     def AddTransaction(self, transaction):
         # add trasanction to DAG
         self.DAG[transaction.id] = transaction
@@ -112,9 +99,6 @@ class TangleGraph():
         # of opposite edges of each approved transaction 
         # <id of approved transaction 1: [id of the new transaction being added]
         
-        print("validatedTips[0]: ",validatedTips[0])
-        print("validatedTips[1]: ",validatedTips[1])
-        
         if validatedTips[0] not in self.oppositeEdges:
             self.oppositeEdges[validatedTips[0]] = [transaction.id]
         else:
@@ -123,11 +107,7 @@ class TangleGraph():
         if validatedTips[1] not in self.oppositeEdges:
             self.oppositeEdges[validatedTips[1]] = [transaction.id]
         else:
-            self.oppositeEdges[validatedTips[1]].append(transaction.id) 
-         
-        #print("self.oppositeEdges[validatedTips]: ",self.oppositeEdges[tuple(validatedTips)])
-        #print("self.oppositeEdges[validatedTips[0]]: ",self.oppositeEdges[validatedTips[0]])
-        #print("self.oppositeEdges[validatedTips[1]]: ",self.oppositeEdges[validatedTips[1]])
+            self.oppositeEdges[validatedTips[1]].append(transaction.id)
         
         # recursively update cumulative weights until we hit the genesis node
         self.changeCumulativeWeight(transaction)
