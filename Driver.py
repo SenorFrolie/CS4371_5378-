@@ -51,7 +51,7 @@ for i in edges.keys():
 
 # get different colors for tips and validated nodes
 for i in Graph.DAG:
-    if Graph.DAG[i].cumulativeWeight <= 1:
+    if Graph.DAG[i].cumulativeWeight <= 2:
         nodes_color.append("red")
     else:
         nodes_color.append("cyan")
