@@ -77,12 +77,16 @@ nodes = []
 
 for i in edges.keys():
     for j in edges[i]:
+        if i == None:
+            continue
+        if j == None:
+            continue
         nodes.append(((i,Graph.DAG[i].cumulativeWeight),(j,Graph.DAG[j].cumulativeWeight)))
         #nodes.append((i,j))
 
 G = nx.DiGraph()
 G.add_edges_from(nodes)
 plt.tight_layout()
-nx.draw_networkx(G, arrows=True)
+nx.draw_networkx(G, arrows=True, node_color='cyan', node_size=1000, font_weight='bold', pos=nx.spring_layout(G,k=4))
 plt.title("Tangle")
 plt.show()

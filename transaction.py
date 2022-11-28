@@ -1,8 +1,6 @@
 import time
-# import hashlib
 from POWandValid import *
 from Encryption import *
-import math
 
 class Transaction():
     def __init__(self, id,source, destination, data, validated):
