@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 # amount of nodes that will be added to the Tangle - can be changed by user
-AMOUNT = 7
+AMOUNT = int(input ("Enter number of transaction to be generated: "))
 
+#Functions to generate random data for transanctions
 lamb = 10
 # Returning a number between 0-1
 def random():
     return 0 + (100-50)*rn.random()
-
 def genExp(lamb):
     x = 0
     while x == 0:
@@ -55,7 +55,7 @@ for i in Graph.DAG:
         nodes_color.append("red")
     else:
         nodes_color.append("cyan")
-        
+
 G = nx.DiGraph()
 G.add_edges_from(nodes)
 plt.tight_layout()
